@@ -1,5 +1,7 @@
 package ui.objectsUI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Admin {
@@ -21,6 +23,15 @@ public class Admin {
     private String profilePicture;
     private String companyLogo;
 
+    private List<Customer> customers = new ArrayList<>();
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
 
     public String getFirstName() {
         return firstName;

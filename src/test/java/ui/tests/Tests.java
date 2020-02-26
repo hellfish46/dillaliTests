@@ -47,14 +47,17 @@ public class Tests extends TestBase{
         admin.setAddressFirst("Novoorlovska street h. 12 block 18, or go to the center of te city");
         admin.setAddressSecond("Viktora Merzlenka Street.17");
         admin.setCurrency("KWD - Kuwaiti Dinar");
-        admin.setDateFormat("17-02-2020"); // Need to refactor this
+        admin.setDateFormat(String.format("%s/%s/%s", getDay(), getMonth(),getYear()));
 
 
 
         SettingsPage settingsPage = new SettingsPage();
         settingsPage.accountSettingsClick();
+        settingsPage.setProfilePicture("/home/john/Desktop/express.png");
+        settingsPage.clickSaveBtn();
 
         settingsPage.companyInformationClick();
+        settingsPage.setCompanyLogo("/home/john/Desktop/logo.png");
         settingsPage.setCountry(admin.getCountry());
         settingsPage.fillPhone(admin.getPhone());
         settingsPage.fillState(admin.getState());
@@ -74,19 +77,6 @@ public class Tests extends TestBase{
         sleep(3000);
 
         assertThat(admin).isEqualTo(settingsPage.getAllAdminsSettings());
-
-
-
-
-        //$(By.xpath("//div[@class='overlay']")).click();
-        //File d = $(By.xpath("//input[@type = 'file']")).uploadFile(new File("/home/john/Downloads/add-icon-png-2468.png"));
-        //Selenide.executeJavaScript("arguments[0].value =" + d);
-//        sleep(2000);
-//        settingsPage.clickSaveBtn();
-//        sleep(2000);
-//        refresh();
-//        sleep(2000);
-       // $(By.xpath("//button[text()='Submit']")).click();
 
     }
 
@@ -135,6 +125,23 @@ public class Tests extends TestBase{
         assertThat(confirmPasswordValidationMsgs).contains(ValidationMessage.REPEATPASSWORD.getMessage());   
     }
 
+    @Test
+    public void testUploadFile(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+
+        SettingsPage settingsPage = new SettingsPage();
+        settingsPage.companyInformationClick();
+        settingsPage.setCompanyLogo("/home/john/Desktop/logo.png");
+
+        settingsPage.clickSaveBtn();
+
+    }
 
 
 

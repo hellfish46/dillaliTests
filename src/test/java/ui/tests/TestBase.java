@@ -18,6 +18,26 @@ public class TestBase {
     int month = localDate.getMonthValue();
     int day   = localDate.getDayOfMonth();
 
+    protected String getDay(){
+        if(day < 10){
+            return String.format("0%d", day);
+        } else {
+            return String.valueOf(day);
+        }
+    }
+
+    protected String getMonth(){
+        if(month < 10){
+            return String.format("0%d", month);
+        } else {
+            return String.valueOf(month);
+        }
+    }
+
+    protected String getYear(){
+        return String.valueOf(year);
+    }
+
 
 
 

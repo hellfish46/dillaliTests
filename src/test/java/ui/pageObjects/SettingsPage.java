@@ -28,6 +28,7 @@ public class SettingsPage {
     private By xpathZip = By.xpath("//input[@placeholder = 'Zip']");
     private By xpathStreetOne = By.xpath("//textarea[@placeholder = 'Street 1']");
     private By xpathStreetTwo = By.xpath("//textarea[@placeholder = 'Street 2']");
+    private By xpathProfileImg = By.xpath("//div[@id='pick-avatar']/img");
 
     public SettingsPage SettingsClick(){
         $(By.xpath("//span[text()='Settings']")).click();
@@ -35,8 +36,16 @@ public class SettingsPage {
     }
 
     //Account settings
+
     public SettingsPage accountSettingsClick(){
         $(By.xpath("//span[text()='Account Settings']")).scrollIntoView(false).click();
+        return this;
+    }
+
+    public SettingsPage setProfilePicture(String path){
+        sleep(1000);
+        $(By.xpath("//input[@type = 'file']")).sendKeys(path);
+        $(By.xpath("//button[text()='Submit']")).shouldBe(Condition.visible).click();
         return this;
     }
 
@@ -76,6 +85,8 @@ public class SettingsPage {
         return this;
     }
 
+
+
     public SettingsPage fillOldPassword(String oldPassword){
         $(xpathOldPassword).setValue(oldPassword);
         return this;
@@ -93,8 +104,16 @@ public class SettingsPage {
 
 
 // Company information
+
     public SettingsPage companyInformationClick(){
         $(By.xpath("//span[text()='Company Information']")).scrollIntoView(false).click();
+        return this;
+    }
+
+    public SettingsPage setCompanyLogo(String path){
+        sleep(1000);
+        $(By.xpath("//input[@type = 'file']")).sendKeys(path);
+        $(By.xpath("//button[text()='Submit']")).shouldBe(Condition.visible).click();
         return this;
     }
 
@@ -209,9 +228,6 @@ public class SettingsPage {
                 .getText());
 
         return admin;
-
-
-
     }
 
 
@@ -230,6 +246,7 @@ public class SettingsPage {
 
     public SettingsPage clickSaveBtn(){
         $(By.xpath("//button[@type = 'submit']")).click();
+        $(By.xpath("//button[@type = 'submit']")).shouldNot(Condition.disabled);
         return this;
     }
 
@@ -260,6 +277,36 @@ public class SettingsPage {
 
     public List<String> getConfirmPasswordValidationMessages(){
         SelenideElement input = $(xpathConfirmPassword);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getCompanyNameValidationMessages(){
+        SelenideElement input = $(xpathCompanyName);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getPhoneValidationMessages(){
+        SelenideElement input = $(xpathPhone);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getStateValidationMessages(){
+        SelenideElement input = $(xpathState);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getCityValidationMessages(){
+        SelenideElement input = $(xpathCity);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getZipValidationMessages(){
+        SelenideElement input = $(xpathZip);
+        return getValidationMessagesViaElement(input);
+    }
+
+    public List<String> getStreetOneValidationMessages(){
+        SelenideElement input = $(xpathStreetOne);
         return getValidationMessagesViaElement(input);
     }
 
