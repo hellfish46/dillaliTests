@@ -8,9 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 import ui.objectsUI.Admin;
-import ui.pageObjects.LoginPage;
-import ui.pageObjects.SettingsPage;
-import ui.pageObjects.ValidationMessage;
+import ui.objectsUI.Customer;
+import ui.pageObjects.*;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -43,9 +42,9 @@ public class Tests extends TestBase{
         admin.setPhone("0934546787");
         admin.setState("Alabama");
         admin.setCity("Dnipro");
-        admin.setZip("49000");
-        admin.setAddressFirst("Novoorlovska street h. 12 block 18, or go to the center of te city");
-        admin.setAddressSecond("Viktora Merzlenka Street.17");
+        admin.setZip("18226");
+        admin.setAddressFirst("Novoorlovska street h. 12 block 18");
+        admin.setAddressSecond("Viktora Merzlenka");
         admin.setCurrency("KWD - Kuwaiti Dinar");
         admin.setDateFormat(String.format("%s/%s/%s", getDay(), getMonth(),getYear()));
 
@@ -125,8 +124,32 @@ public class Tests extends TestBase{
         assertThat(confirmPasswordValidationMsgs).contains(ValidationMessage.REPEATPASSWORD.getMessage());   
     }
 
+
+
+
+//    @Test
+//    public void getParsedCustomer(){
+//        LoginPage loginPage = new LoginPage();
+//        open("/login");
+//
+//        loginPage.fillEmail("test@test.com");
+//        loginPage.fillPassword("secret");
+//        loginPage.clickLoginBtn();
+//        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+//
+//        Customer customer = new Customer();
+//        customer.setCompanyName("BlueBox");
+//        customer.setContactPerson("Adrian");
+//        customer.setPhone("555-67-23");
+//        customer.setEmail("adrian@o.com");
+//        AllCustomersPage allCustomersPage = new AllCustomersPage();
+//        allCustomersPage.customersClick();
+//        allCustomersPage.checkFirstCustomerInList(customer);
+//
+//    }
+
     @Test
-    public void testUploadFile(){
+    public void createNewCustomer(){
         LoginPage loginPage = new LoginPage();
         open("/login");
 
@@ -135,11 +158,29 @@ public class Tests extends TestBase{
         loginPage.clickLoginBtn();
         $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
 
-        SettingsPage settingsPage = new SettingsPage();
-        settingsPage.companyInformationClick();
-        settingsPage.setCompanyLogo("/home/john/Desktop/logo.png");
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+        allCustomersPage.newCustomerClick();
 
-        settingsPage.clickSaveBtn();
+        Customer customer = new Customer();
+        customer.setCompanyName("Jacobs");
+        customer.setContactPerson("Ignat Vladimirovich");
+        customer.setEmail("jacobs@o.com");
+        customer.setPhone("9991243");
+        customer.setCountry("Bahrain");
+        customer.setZipCode("94z12");
+        customer.setAddress("zxcvZXCV 1234 !@#$%^&*()");
+
+        NewCustomerPage newCustomerPage = new NewCustomerPage();
+        newCustomerPage.fillNewCustomerForm(customer).clickSaveCustomerBtn();
+
+        allCustomersPage.checkFirstCustomerInList(customer);
+
+
+    }
+
+    @Test
+    public void editCustomer(){
 
     }
 

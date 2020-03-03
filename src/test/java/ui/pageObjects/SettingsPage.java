@@ -238,6 +238,7 @@ public class SettingsPage {
             String spanText = li.$(By.xpath("./span/span")).getText();
             if(spanText.equals(point)){
                 foundLi = li;
+                break; // should be tested;
             }
         }
         foundLi.shouldBe(Condition.exist);
