@@ -151,7 +151,7 @@ public class Tests extends TestBase{
 
 
         CreateNewCustomerPage createNewCustomerPage = new CreateNewCustomerPage();
-        createNewCustomerPage.fillNewCustomerForm(customer).clickSaveCustomerBtn();
+        createNewCustomerPage.fillCustomerForm(customer).clickSaveCustomerBtn();
 
         allCustomersPage.checkFirstCustomerInList(customer);
         allCustomersPage.clickEditCustomer(1);
@@ -159,7 +159,37 @@ public class Tests extends TestBase{
         EditCustomerPage editCustomerPage = new EditCustomerPage();
         editCustomerPage.checkCustomerInfo(customer);
 
+    }
 
+    @Test
+    public void editCustomer(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+
+        Customer customer = new Customer();
+        customer.setCompanyName("Mr.Medvezhonkin");
+        customer.setContactPerson("Alina Malina");
+        customer.setEmail("medvezhonkin@o.com");
+        customer.setPhone("11001232v");
+        customer.setCountry("El Salvador");
+        customer.setPostalZipCode("00z12x3");
+        customer.setAddress("Any Address for out company 123ZXC!zxc");
+
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+        allCustomersPage.clickEditCustomer(1);
+
+        EditCustomerPage editCustomerPage = new EditCustomerPage();
+        editCustomerPage.fillCustomerForm(customer);
+        editCustomerPage.clickSaveCustomerBtn();
+        allCustomersPage.checkCustomerInList(1, customer);
+        allCustomersPage.clickEditCustomer(1);
+        editCustomerPage.checkCustomerInfo(customer);
     }
 
     @Test
@@ -172,9 +202,11 @@ public class Tests extends TestBase{
         loginPage.clickLoginBtn();
         $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
 
-       SettingsPage settingsPage = new SettingsPage();
-       settingsPage.accountSettingsClick();
-        System.out.println(settingsPage.getProfilePictureName());
+        Customer customer = new Customer();
+
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+        allCustomersPage.checkCustomerInList(6, customer);
     }
 
 

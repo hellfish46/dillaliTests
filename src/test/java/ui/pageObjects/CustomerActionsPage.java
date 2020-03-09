@@ -64,8 +64,8 @@ public class CustomerActionsPage {
         return foundLi;
     }
 
-    public CustomerActionsPage fillPostalZipCode(String zipCode){
-        $(xpathPostalZipCode).shouldBe(Condition.visible).setValue(zipCode);
+    public CustomerActionsPage fillPostalZipCode(String postalZipCode){
+        $(xpathPostalZipCode).shouldBe(Condition.visible).setValue(postalZipCode);
         return this;
     }
 
@@ -80,12 +80,12 @@ public class CustomerActionsPage {
         return new AllCustomersPage();
     }
 
-    public CustomerActionsPage fillNewCustomerForm(Customer customer){
+    public CustomerActionsPage fillCustomerForm(Customer customer){
+        setCountry(customer.getCountry());
         fillCompanyName(customer.getCompanyName());
         fillContactPerson(customer.getContactPerson());
         fillEmail(customer.getEmail());
         fillPhone(customer.getPhone());
-        setCountry(customer.getCountry());
         fillPostalZipCode(customer.getPostalZipCode());
         fillAddress(customer.getAddress());
 

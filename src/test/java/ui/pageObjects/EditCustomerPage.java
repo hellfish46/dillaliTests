@@ -20,14 +20,14 @@ public class EditCustomerPage extends CustomerActionsPage {
         return $(xpathEmail).shouldNotHave(contentIsEmptyCondition).getValue();
     }
     private String getPhone(){
-        return $(xpathPhone).shouldNotHave(contentIsEmptyCondition).getValue();
+        return $(xpathPhone).getValue();
     }
     private String getCountry(){
         return $(xpathCountry).shouldBe(Condition.visible).getText();
     }
 
     private String getPostalZipCode(){
-        return $(xpathPostalZipCode).shouldNotHave(contentIsEmptyCondition).getValue();
+        return $(xpathPostalZipCode).getValue();
     }
     private String getAddress(){
         return $(xpathAddress).shouldNotHave(contentIsEmptyCondition).getValue();

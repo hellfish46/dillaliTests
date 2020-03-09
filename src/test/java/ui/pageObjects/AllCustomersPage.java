@@ -31,6 +31,15 @@ public class AllCustomersPage {
         assertThat(customer.getContactPerson()).isEqualTo(parsedCustomer.get("contactPerson"));
         assertThat(customer.getPhone()).isEqualTo(parsedCustomer.get("phone"));
         assertThat(customer.getEmail()).isEqualTo(parsedCustomer.get("email"));
+    }
+
+    public void checkCustomerInList(int position, Customer customer){
+        SelenideElement setTr = $(By.xpath("//tbody/tr[" + position + "]"));
+        HashMap parsedCustomer = getInfoFromTr(setTr);
+        assertThat(customer.getCompanyName()).isEqualTo(parsedCustomer.get("companyName"));
+        assertThat(customer.getContactPerson()).isEqualTo(parsedCustomer.get("contactPerson"));
+        assertThat(customer.getPhone()).isEqualTo(parsedCustomer.get("phone"));
+        assertThat(customer.getEmail()).isEqualTo(parsedCustomer.get("email"));
 
     }
 
