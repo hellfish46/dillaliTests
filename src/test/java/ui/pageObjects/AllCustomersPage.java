@@ -6,10 +6,8 @@ import org.openqa.selenium.By;
 import ui.objectsUI.Customer;
 
 import java.util.HashMap;
-import java.util.List;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AllCustomersPage {
@@ -21,9 +19,9 @@ public class AllCustomersPage {
         return this;
     }
 
-    public NewCustomerPage newCustomerClick(){
+    public CustomerActionsPage newCustomerClick(){
         $(By.xpath("//a[@href='/admin/customers/create']/button")).shouldBe(Condition.visible).click();
-        return new NewCustomerPage();
+        return new CustomerActionsPage();
     }
 
     public void checkFirstCustomerInList(Customer customer){
@@ -58,6 +56,7 @@ public class AllCustomersPage {
     public AllCustomersPage clickEditCustomer(int trPosition){
         clickFirstCustomerSettings(trPosition);
         $(By.xpath("//tbody/tr[" + trPosition + "]//a[@class='dropdown-item']")).shouldBe(Condition.visible).click();
+        $(By.xpath("//h3[text()='Edit Customer']")).shouldBe(Condition.visible);
         return this;
     }
 

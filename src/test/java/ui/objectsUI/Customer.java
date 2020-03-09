@@ -1,12 +1,14 @@
 package ui.objectsUI;
 
+import java.util.Objects;
+
 public class Customer {
     private String companyName;
     private String contactPerson;
     private String email;
     private String phone;
     private String country;
-    private String zipCode;
+    private String postalZipCode;
     private String address;
 
     public String getCompanyName() {
@@ -49,12 +51,12 @@ public class Customer {
         this.country = country;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public String getPostalZipCode() {
+        return postalZipCode;
     }
 
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    public void setPostalZipCode(String postalZipCode) {
+        this.postalZipCode = postalZipCode;
     }
 
     public String getAddress() {
@@ -63,5 +65,37 @@ public class Customer {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "companyName='" + companyName + '\'' +
+                ", contactPerson='" + contactPerson + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", country='" + country + '\'' +
+                ", zipCode='" + postalZipCode + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(companyName, customer.companyName) &&
+                Objects.equals(contactPerson, customer.contactPerson) &&
+                Objects.equals(email, customer.email) &&
+                Objects.equals(phone, customer.phone) &&
+                Objects.equals(country, customer.country) &&
+                Objects.equals(postalZipCode, customer.postalZipCode) &&
+                Objects.equals(address, customer.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(companyName, contactPerson, email, phone, country, postalZipCode, address);
     }
 }

@@ -11,38 +11,38 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.sleep;
 
-public class NewCustomerPage {
+public class CustomerActionsPage {
 
-    private By xpathCompanyName = By.xpath("//label[text()='Company Name']/following-sibling::div/input");
-    private By xpathContactPerson = By.xpath("//label[text()='Contact person']/following-sibling::div/input");
-    private By xpathEmail = By.xpath("//label[text()='Email']/following-sibling::div/input");
-    private By xpathPhone = By.xpath("//label[text()='Phone']/following-sibling::div/input");
-    private By xpathCountry = By.xpath("//label[text()='Country']/following-sibling::div/div/input");
-    private By xpathZipCode = By.xpath("//label[text()='Zip Code']/following-sibling::div/input");
-    private By xpathAddress = By.xpath("//label[text()='Address']/following-sibling::input");
+    protected By xpathCompanyName = By.xpath("//label[text()='Company Name']/following-sibling::div/input");
+    protected By xpathContactPerson = By.xpath("//label[text()='Contact person']/following-sibling::div/input");
+    protected By xpathEmail = By.xpath("//label[text()='Email']/following-sibling::div/input");
+    protected By xpathPhone = By.xpath("//label[text()='Phone']/following-sibling::div/input");
+    protected By xpathCountry = By.xpath("//label[text()='Country']/following-sibling::div/div/span"); // <= not input
+    protected By xpathPostalZipCode = By.xpath("//label[text()='Postal / Zip Code']/following-sibling::div/input");
+    protected By xpathAddress = By.xpath("//label[text()='Address']/following-sibling::div/input");
 
-    public NewCustomerPage fillCompanyName(String companyName){
+    public CustomerActionsPage fillCompanyName(String companyName){
         $(xpathCompanyName).shouldBe(Condition.visible).setValue(companyName);
         return this;
     }
 
-    public NewCustomerPage fillContactPerson(String contactPerson){
+    public CustomerActionsPage fillContactPerson(String contactPerson){
         $(xpathContactPerson).shouldBe(Condition.visible).setValue(contactPerson);
         return this;
     }
 
-    public NewCustomerPage fillEmail(String email){
+    public CustomerActionsPage fillEmail(String email){
         $(xpathEmail).shouldBe(Condition.visible).setValue(email);
         return this;
     }
 
-    public NewCustomerPage fillPhone(String phone){
+    public CustomerActionsPage fillPhone(String phone){
         $(xpathPhone).shouldBe(Condition.visible).setValue(phone);
         return this;
     }
 
 
-    public NewCustomerPage setCountry(String country){
+    public CustomerActionsPage setCountry(String country){
         SelenideElement select = $(By.xpath("//label[text()='Country']/following-sibling::div[@aria-owns='listbox-null']")).scrollIntoView(true);
         sleep(1000);
         select.click();
@@ -64,12 +64,12 @@ public class NewCustomerPage {
         return foundLi;
     }
 
-    public NewCustomerPage fillZipCode(String zipCode){
-        $(xpathZipCode).shouldBe(Condition.visible).setValue(zipCode);
+    public CustomerActionsPage fillPostalZipCode(String zipCode){
+        $(xpathPostalZipCode).shouldBe(Condition.visible).setValue(zipCode);
         return this;
     }
 
-    public NewCustomerPage fillAddress(String address){
+    public CustomerActionsPage fillAddress(String address){
         $(xpathAddress).shouldBe(Condition.visible).setValue(address);
         return this;
     }
@@ -80,14 +80,14 @@ public class NewCustomerPage {
         return new AllCustomersPage();
     }
 
-    public NewCustomerPage fillNewCustomerForm(Customer customer){
+    public CustomerActionsPage fillNewCustomerForm(Customer customer){
         fillCompanyName(customer.getCompanyName());
         fillContactPerson(customer.getContactPerson());
         fillEmail(customer.getEmail());
         fillPhone(customer.getPhone());
         setCountry(customer.getCountry());
-        fillZipCode(customer.getZipCode());
-        //fillAddress(customer.getAddress());
+        fillPostalZipCode(customer.getPostalZipCode());
+        fillAddress(customer.getAddress());
 
         return this;
     }

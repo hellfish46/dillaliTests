@@ -20,10 +20,49 @@ public class Admin {
     private String addressSecond;
     private String currency;
     private String dateFormat;
-    private String profilePicture;
-    private String companyLogo;
+
+    private String profilePicturePath;
+    private String profilePictureName;
+
+    private String companyLogoPath;
+    private String companyLogoName;
 
     private List<Customer> customers = new ArrayList<>();
+
+
+
+
+    public String getFullPathOfProfilePicture(){
+        try {
+            return profilePicturePath + profilePictureName;
+        } catch (NullPointerException e){
+            return "Profile Picture name or/and Profile Picture Path wasn't set !";
+        }
+    }
+
+    public String getFullPathOfCompanyLogo(){
+        try {
+            return companyLogoPath + companyLogoName;
+        } catch (NullPointerException e){
+            return "Company Logo name or/and Company Logo Path wasn't set !";
+        }
+    }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
+
+    public String getCompanyLogoPath() {
+        return companyLogoPath;
+    }
+
+    public void setCompanyLogoPath(String companyLogoPath) {
+        this.companyLogoPath = companyLogoPath;
+    }
 
     public List<Customer> getCustomers() {
         return customers;
@@ -145,47 +184,20 @@ public class Admin {
         this.dateFormat = dateFormat;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfilePictureName() {
+        return profilePictureName;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilePictureName(String profilePictureName) {
+        this.profilePictureName = profilePictureName;
     }
 
-    public String getCompanyLogo() {
-        return companyLogo;
+    public String getCompanyLogoName() {
+        return companyLogoName;
     }
 
-    public void setCompanyLogo(String companyLogo) {
-        this.companyLogo = companyLogo;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Admin admin = (Admin) o;
-        return Objects.equals(firstName, admin.firstName) &&
-                Objects.equals(lastName, admin.lastName) &&
-                Objects.equals(company, admin.company) &&
-                Objects.equals(email, admin.email) &&
-                Objects.equals(phone, admin.phone) &&
-                Objects.equals(country, admin.country) &&
-                Objects.equals(state, admin.state) &&
-                Objects.equals(city, admin.city) &&
-                Objects.equals(zip, admin.zip) &&
-                Objects.equals(addressFirst, admin.addressFirst) &&
-                Objects.equals(addressSecond, admin.addressSecond) &&
-                Objects.equals(currency, admin.currency) &&
-                Objects.equals(dateFormat, admin.dateFormat) &&
-                Objects.equals(profilePicture, admin.profilePicture) &&
-                Objects.equals(companyLogo, admin.companyLogo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, company, email, phone, country, state, city, zip, addressFirst, addressSecond, currency, dateFormat, profilePicture, companyLogo);
+    public void setCompanyLogoName(String companyLogoName) {
+        this.companyLogoName = companyLogoName;
     }
 
     @Override
@@ -205,8 +217,40 @@ public class Admin {
                 ", addressSecond='" + addressSecond + '\'' +
                 ", currency='" + currency + '\'' +
                 ", dateFormat='" + dateFormat + '\'' +
-                ", profilePicture='" + profilePicture + '\'' +
-                ", companyLogo='" + companyLogo + '\'' +
+                ", profilePicturePath='" + profilePicturePath + '\'' +
+                ", profilePictureName='" + profilePictureName + '\'' +
+                ", companyLogoPath='" + companyLogoPath + '\'' +
+                ", companyLogoName='" + companyLogoName + '\'' +
+                ", customers=" + customers +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Admin admin = (Admin) o;
+        return Objects.equals(firstName, admin.firstName) &&
+                Objects.equals(lastName, admin.lastName) &&
+                Objects.equals(company, admin.company) &&
+                Objects.equals(email, admin.email) &&
+                Objects.equals(password, admin.password) &&
+                Objects.equals(phone, admin.phone) &&
+                Objects.equals(country, admin.country) &&
+                Objects.equals(state, admin.state) &&
+                Objects.equals(city, admin.city) &&
+                Objects.equals(zip, admin.zip) &&
+                Objects.equals(addressFirst, admin.addressFirst) &&
+                Objects.equals(addressSecond, admin.addressSecond) &&
+                Objects.equals(currency, admin.currency) &&
+                Objects.equals(dateFormat, admin.dateFormat) &&
+                Objects.equals(profilePictureName, admin.profilePictureName) &&
+                Objects.equals(companyLogoName, admin.companyLogoName) &&
+                Objects.equals(customers, admin.customers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, company, email, password, phone, country, state, city, zip, addressFirst, addressSecond, currency, dateFormat, profilePictureName, companyLogoName, customers);
     }
 }

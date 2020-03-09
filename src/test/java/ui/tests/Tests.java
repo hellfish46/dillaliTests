@@ -1,20 +1,12 @@
 package ui.tests;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverProvider;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 import ui.objectsUI.Admin;
 import ui.objectsUI.Customer;
 import ui.pageObjects.*;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -46,17 +38,24 @@ public class Tests extends TestBase{
         admin.setAddressFirst("Novoorlovska street h. 12 block 18");
         admin.setAddressSecond("Viktora Merzlenka");
         admin.setCurrency("KWD - Kuwaiti Dinar");
-        admin.setDateFormat(String.format("%s/%s/%s", getDay(), getMonth(),getYear()));
+        admin.setDateFormat(String.format("%s.%s.%s", getDay(), getMonth(),getYear()));
+        admin.setCompanyLogoPath("/home/john/Desktop/");
+        admin.setCompanyLogoName("houseLogo.png");
+        admin.setProfilePicturePath("/home/john/Desktop/");
+        admin.setProfilePictureName("mrX.jpg");
 
 
 
         SettingsPage settingsPage = new SettingsPage();
         settingsPage.accountSettingsClick();
-        settingsPage.setProfilePicture("/home/john/Desktop/express.png");
+        settingsPage.setProfilePicture(admin.getFullPathOfProfilePicture());
+        settingsPage.fillFirstName(admin.getFirstName());
+        settingsPage.fillLastName(admin.getLastName());
         settingsPage.clickSaveBtn();
 
         settingsPage.companyInformationClick();
-        settingsPage.setCompanyLogo("/home/john/Desktop/logo.png");
+        settingsPage.setCompanyLogo(admin.getFullPathOfCompanyLogo());
+        settingsPage.fillCompanyName(admin.getCompany());
         settingsPage.setCountry(admin.getCountry());
         settingsPage.fillPhone(admin.getPhone());
         settingsPage.fillState(admin.getState());
@@ -92,8 +91,8 @@ public class Tests extends TestBase{
 
         SettingsPage settingsPage = new SettingsPage();
         settingsPage.accountSettingsClick();
-        settingsPage.clearFirstName();
 
+        settingsPage.clearFirstName();
         List<String> firstNameValidationMsgs = settingsPage.getFirstNameValidationMessages();
         assertThat(firstNameValidationMsgs).contains(ValidationMessage.FIELDISREQUIRED.getMessage());
         assertThat(firstNameValidationMsgs).contains(ValidationMessage.WRONGINPUTE.getMessage());
@@ -126,28 +125,6 @@ public class Tests extends TestBase{
 
 
 
-
-//    @Test
-//    public void getParsedCustomer(){
-//        LoginPage loginPage = new LoginPage();
-//        open("/login");
-//
-//        loginPage.fillEmail("test@test.com");
-//        loginPage.fillPassword("secret");
-//        loginPage.clickLoginBtn();
-//        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
-//
-//        Customer customer = new Customer();
-//        customer.setCompanyName("BlueBox");
-//        customer.setContactPerson("Adrian");
-//        customer.setPhone("555-67-23");
-//        customer.setEmail("adrian@o.com");
-//        AllCustomersPage allCustomersPage = new AllCustomersPage();
-//        allCustomersPage.customersClick();
-//        allCustomersPage.checkFirstCustomerInList(customer);
-//
-//    }
-
     @Test
     public void createNewCustomer(){
         LoginPage loginPage = new LoginPage();
@@ -168,20 +145,36 @@ public class Tests extends TestBase{
         customer.setEmail("jacobs@o.com");
         customer.setPhone("9991243");
         customer.setCountry("Bahrain");
-        customer.setZipCode("94z12");
+        customer.setPostalZipCode("94z12");
         customer.setAddress("zxcvZXCV 1234 !@#$%^&*()");
 
-        NewCustomerPage newCustomerPage = new NewCustomerPage();
-        newCustomerPage.fillNewCustomerForm(customer).clickSaveCustomerBtn();
+
+
+        CreateNewCustomerPage createNewCustomerPage = new CreateNewCustomerPage();
+        createNewCustomerPage.fillNewCustomerForm(customer).clickSaveCustomerBtn();
 
         allCustomersPage.checkFirstCustomerInList(customer);
+        allCustomersPage.clickEditCustomer(1);
+
+        EditCustomerPage editCustomerPage = new EditCustomerPage();
+        editCustomerPage.checkCustomerInfo(customer);
 
 
     }
 
     @Test
-    public void editCustomer(){
+    public void check(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
 
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+
+       SettingsPage settingsPage = new SettingsPage();
+       settingsPage.accountSettingsClick();
+        System.out.println(settingsPage.getProfilePictureName());
     }
 
 

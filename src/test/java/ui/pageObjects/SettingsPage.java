@@ -28,7 +28,11 @@ public class SettingsPage {
     private By xpathZip = By.xpath("//input[@placeholder = 'Zip']");
     private By xpathStreetOne = By.xpath("//textarea[@placeholder = 'Street 1']");
     private By xpathStreetTwo = By.xpath("//textarea[@placeholder = 'Street 2']");
-    private By xpathProfileImg = By.xpath("//div[@id='pick-avatar']/img");
+    //private By xpathProfileImg = By.xpath("//div[@id='pick-avatar']/img");
+
+    private By xpathProfilePicture = By.xpath("//form//label[text()='Profile Picture']/following-sibling::div/img");
+    private By xpathCompanyLogo = By.xpath("//form//label[text()='Company Logo']/following-sibling::div/img");
+
 
     public SettingsPage SettingsClick(){
         $(By.xpath("//span[text()='Settings']")).click();
@@ -36,6 +40,12 @@ public class SettingsPage {
     }
 
     //Account settings
+
+    public String getProfilePictureName(){
+        String src = $(xpathProfilePicture).shouldBe(Condition.visible).getAttribute("src");
+        String[] data = src.split("/");
+        return data[data.length-1];
+    }
 
     public SettingsPage accountSettingsClick(){
         $(By.xpath("//span[text()='Account Settings']")).scrollIntoView(false).click();
@@ -55,7 +65,9 @@ public class SettingsPage {
     }
 
     public SettingsPage clearFirstName(){
-        sleep(1000);
+      sleep(1000);
+
+
         $(xpathFirstName).sendKeys(Keys.CONTROL + "a");
         $(xpathFirstName).sendKeys(Keys.DELETE);
         return this;
@@ -68,6 +80,8 @@ public class SettingsPage {
 
     public SettingsPage clearLastName(){
         sleep(1000);
+       // $(xpathLastName).shouldHave(Condition.attribute("value","testLastD"));
+        //$(xpathLastName).click();
         $(xpathLastName).sendKeys(Keys.CONTROL + "a");
         $(xpathLastName).sendKeys(Keys.DELETE);
         return this;
@@ -79,7 +93,9 @@ public class SettingsPage {
     }
 
     public SettingsPage clearEmail(){
-        sleep(1000);
+       sleep(1000);
+      //  $(xpathEmail).shouldHave(Condition.attribute("value","test@test.com"));
+        //$(xpathEmail).click();
         $(xpathEmail).sendKeys(Keys.CONTROL + "a");
         $(xpathEmail).sendKeys(Keys.DELETE);
         return this;
@@ -104,6 +120,12 @@ public class SettingsPage {
 
 
 // Company information
+
+    public String getCompanyLogoName(){
+        String src = $(xpathCompanyLogo).shouldBe(Condition.visible).getAttribute("src");
+        String[] data = src.split("/");
+        return data[data.length-1];
+    }
 
     public SettingsPage companyInformationClick(){
         $(By.xpath("//span[text()='Company Information']")).scrollIntoView(false).click();
@@ -208,6 +230,7 @@ public class SettingsPage {
         admin.setZip($(xpathZip).getAttribute("value"));
         admin.setAddressFirst($(xpathStreetOne).getAttribute("value"));
         admin.setAddressSecond($(xpathStreetTwo).getAttribute("value"));
+        admin.setCompanyLogoName(getCompanyLogoName());
 
 
         open("/admin/settings/user-profile");
@@ -217,6 +240,7 @@ public class SettingsPage {
         admin.setFirstName($(xpathFirstName).getAttribute("value"));
         admin.setLastName($(xpathLastName).getAttribute("value"));
         admin.setEmail($(xpathEmail).getAttribute("value"));
+        admin.setProfilePictureName(getProfilePictureName());
 
         open("/admin/settings/preferences");
         sleep(3000);
