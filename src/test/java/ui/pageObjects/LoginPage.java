@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+public class LoginPage extends BasePage{
 
     //private String emailInput = "//input[@name='email']";
     private By emailInput = By.xpath("//input[@name='email']");

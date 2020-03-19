@@ -23,7 +23,7 @@ public class Tests extends TestBase{
         loginPage.fillEmail("test@test.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
-        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
 
         Admin admin = new Admin();
         admin.setFirstName("testFirst");
@@ -39,8 +39,10 @@ public class Tests extends TestBase{
         admin.setAddressSecond("Viktora Merzlenka");
         admin.setCurrency("KWD - Kuwaiti Dinar");
         admin.setDateFormat(String.format("%s.%s.%s", getDay(), getMonth(),getYear()));
+
         admin.setCompanyLogoPath("/home/john/Desktop/");
         admin.setCompanyLogoName("houseLogo.png");
+
         admin.setProfilePicturePath("/home/john/Desktop/");
         admin.setProfilePictureName("mrX.jpg");
 
@@ -52,6 +54,7 @@ public class Tests extends TestBase{
         settingsPage.fillFirstName(admin.getFirstName());
         settingsPage.fillLastName(admin.getLastName());
         settingsPage.clickSaveBtn();
+        settingsPage.checkNotificationMessage(NotificationMessage.SETTINGSUPDATED);
 
         settingsPage.companyInformationClick();
         settingsPage.setCompanyLogo(admin.getFullPathOfCompanyLogo());
@@ -64,11 +67,13 @@ public class Tests extends TestBase{
         settingsPage.fillStreetOne(admin.getAddressFirst());
         settingsPage.fillStreetTwo(admin.getAddressSecond());
         settingsPage.clickSaveBtn();
+        settingsPage.checkNotificationMessage(NotificationMessage.SETTINGSUPDATED);
 
         settingsPage.preferencesClick();
         settingsPage.setDateFormat(admin.getDateFormat());
         settingsPage.setCurrency(admin.getCurrency());
         settingsPage.clickSaveBtn();
+        settingsPage.checkNotificationMessage(NotificationMessage.SETTINGSUPDATED);
 
         refresh();
 
@@ -87,7 +92,7 @@ public class Tests extends TestBase{
         loginPage.fillEmail("test@test.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
-        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
 
         SettingsPage settingsPage = new SettingsPage();
         settingsPage.accountSettingsClick();
@@ -126,14 +131,14 @@ public class Tests extends TestBase{
 
 
     @Test
-    public void createNewCustomer(){
+    public void createNewCustomerWithAllFields(){
         LoginPage loginPage = new LoginPage();
         open("/login");
 
         loginPage.fillEmail("test@test.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
-        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
 
         AllCustomersPage allCustomersPage = new AllCustomersPage();
         allCustomersPage.customersClick();
@@ -149,9 +154,9 @@ public class Tests extends TestBase{
         customer.setAddress("zxcvZXCV 1234 !@#$%^&*()");
 
 
-
         CreateNewCustomerPage createNewCustomerPage = new CreateNewCustomerPage();
         createNewCustomerPage.fillCustomerForm(customer).clickSaveCustomerBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.CUSTOMERCREATED);
 
         allCustomersPage.checkFirstCustomerInList(customer);
         allCustomersPage.clickEditCustomer(1);
@@ -159,6 +164,84 @@ public class Tests extends TestBase{
         EditCustomerPage editCustomerPage = new EditCustomerPage();
         editCustomerPage.checkCustomerInfo(customer);
 
+        allCustomersPage.customersClick().deleteCustomer(1);
+        allCustomersPage.checkNotificationMessage(NotificationMessage.CUSTOMERDELETED);
+    }
+
+    @Test
+    public void createNewCustomerWithoutPhone(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+        allCustomersPage.newCustomerClick();
+
+        Customer customer = new Customer();
+        customer.setCompanyName("Jacobs");
+        customer.setContactPerson("Misha");
+        customer.setEmail("jacobs12@o.com");
+        customer.setCountry("Bahrain");
+        customer.setPostalZipCode("94z12");
+        customer.setAddress("zxcvZXCV 1234 !@#$%^&*()");
+
+
+
+        CreateNewCustomerPage createNewCustomerPage = new CreateNewCustomerPage();
+        createNewCustomerPage.fillCustomerForm(customer).clickSaveCustomerBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.CUSTOMERCREATED);
+
+        allCustomersPage.checkFirstCustomerInList(customer);
+        allCustomersPage.clickEditCustomer(1);
+
+        EditCustomerPage editCustomerPage = new EditCustomerPage();
+        editCustomerPage.checkCustomerInfo(customer);
+
+        allCustomersPage.customersClick().deleteCustomer(1);
+        allCustomersPage.checkNotificationMessage(NotificationMessage.CUSTOMERDELETED);
+
+    }
+
+    @Test
+    public void createNewCustomerWithoutPostalZipCode(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+        allCustomersPage.newCustomerClick();
+
+        Customer customer = new Customer();
+        customer.setCompanyName("Jacobs");
+        customer.setContactPerson("Ignat Vladimirovich");
+        customer.setEmail("jacobs@o.com");
+        customer.setPhone("9991243");
+        customer.setCountry("Bahrain");
+        customer.setAddress("zxcvZXCV 1234 !@#$%^&*()");
+
+
+        CreateNewCustomerPage createNewCustomerPage = new CreateNewCustomerPage();
+        createNewCustomerPage.fillCustomerForm(customer).clickSaveCustomerBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.CUSTOMERCREATED);
+
+        allCustomersPage.checkFirstCustomerInList(customer);
+        allCustomersPage.clickEditCustomer(1);
+
+        EditCustomerPage editCustomerPage = new EditCustomerPage();
+        editCustomerPage.checkCustomerInfo(customer);
+
+        allCustomersPage.customersClick().deleteCustomer(1);
+        allCustomersPage.checkNotificationMessage(NotificationMessage.CUSTOMERDELETED);
     }
 
     @Test
@@ -169,12 +252,13 @@ public class Tests extends TestBase{
         loginPage.fillEmail("test@test.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
-        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
 
         Customer customer = new Customer();
         customer.setCompanyName("Mr.Medvezhonkin");
         customer.setContactPerson("Alina Malina");
-        customer.setEmail("medvezhonkin@o.com");
+        customer.setEmail("medvezhonkin1@o.com");
         customer.setPhone("11001232v");
         customer.setCountry("El Salvador");
         customer.setPostalZipCode("00z12x3");
@@ -187,26 +271,56 @@ public class Tests extends TestBase{
         EditCustomerPage editCustomerPage = new EditCustomerPage();
         editCustomerPage.fillCustomerForm(customer);
         editCustomerPage.clickSaveCustomerBtn();
+
+        editCustomerPage.checkNotificationMessage(NotificationMessage.CUSTOMERUPDATED);
         allCustomersPage.checkCustomerInList(1, customer);
+
         allCustomersPage.clickEditCustomer(1);
         editCustomerPage.checkCustomerInfo(customer);
+
+
     }
 
     @Test
-    public void check(){
+    public void deleteCustomer(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("se@da.cx");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+
+        AllCustomersPage allCustomersPage = new AllCustomersPage();
+        allCustomersPage.customersClick();
+
+        int beforeDeletingCountOfCustomers = allCustomersPage.getCountOfCustomers();
+
+        allCustomersPage.deleteCustomer(1);
+        allCustomersPage.checkNotificationMessage(NotificationMessage.CUSTOMERDELETED);
+
+        refresh();
+
+        int afterDeletingCountOfCustomers = allCustomersPage.getCountOfCustomers();
+
+        assertThat(afterDeletingCountOfCustomers).isEqualTo(beforeDeletingCountOfCustomers - 1);
+
+    }
+
+    @Test
+    public void getFirstInvoiceInList(){
         LoginPage loginPage = new LoginPage();
         open("/login");
 
         loginPage.fillEmail("test@test.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
-        $(By.xpath("//h3[text()='Settings']")).shouldBe(Condition.visible);
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
 
-        Customer customer = new Customer();
-
-        AllCustomersPage allCustomersPage = new AllCustomersPage();
-        allCustomersPage.customersClick();
-        allCustomersPage.checkCustomerInList(6, customer);
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.checkInvoiceInList(1);
     }
 
 

@@ -11,7 +11,7 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.sleep;
 
-public class CustomerActionsPage {
+public class CustomerActionsPage extends BasePage{
 
     protected By xpathCompanyName = By.xpath("//label[text()='Company Name']/following-sibling::div/input");
     protected By xpathContactPerson = By.xpath("//label[text()='Contact person']/following-sibling::div/input");

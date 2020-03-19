@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static com.codeborne.selenide.Selenide.$;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AllCustomersPage {
+public class AllCustomersPage extends BasePage{
 
     private By firstCustomerInList = By.xpath("//tbody/tr[1]");
 
@@ -19,9 +19,9 @@ public class AllCustomersPage {
         return this;
     }
 
-    public CustomerActionsPage newCustomerClick(){
+    public CreateNewCustomerPage newCustomerClick(){
         $(By.xpath("//a[@href='/admin/customers/create']/button")).shouldBe(Condition.visible).click();
-        return new CustomerActionsPage();
+        return new CreateNewCustomerPage();
     }
 
     public void checkFirstCustomerInList(Customer customer){
@@ -58,15 +58,34 @@ public class AllCustomersPage {
         return customer;
     }
 
-    private void clickFirstCustomerSettings(int trPosition){
+    private void clickCustomerSettings(int trPosition){
         $(By.xpath("//tbody/tr[" + trPosition + "]//div[@class='dot-icon']")).shouldBe(Condition.visible).click();
     }
 
     public AllCustomersPage clickEditCustomer(int trPosition){
-        clickFirstCustomerSettings(trPosition);
+        clickCustomerSettings(trPosition);
         $(By.xpath("//tbody/tr[" + trPosition + "]//a[@class='dropdown-item']")).shouldBe(Condition.visible).click();
         $(By.xpath("//h3[text()='Edit Customer']")).shouldBe(Condition.visible);
         return this;
+    }
+
+    public AllCustomersPage deleteCustomer(int trPosition){
+
+        clickCustomerSettings(trPosition);
+        $(By.xpath("//tbody/tr[" + trPosition + "]//div[@class='dropdown-item']")).shouldBe(Condition.visible).click();
+        $(By.xpath("//div[@class='swal-modal']//button[text()='OK']")).shouldBe(Condition.visible).click();
+
+
+        return this;
+    }
+
+    public int getCountOfCustomers(){
+        $(By.xpath("//h3[text()='Customers']")).shouldBe(Condition.visible);
+        $(By.xpath("//tbody")).shouldBe(Condition.visible);
+        String countOfCustomersString = $(By.xpath("//p[@class='table-stats']/b[2]"))
+                .shouldBe(Condition.visible).getText();
+        int countOfCustomerInt = Integer.parseInt(countOfCustomersString);
+        return countOfCustomerInt;
     }
 
 

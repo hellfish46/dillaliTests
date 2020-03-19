@@ -6,9 +6,9 @@ public class Customer {
     private String companyName;
     private String contactPerson;
     private String email;
-    private String phone;
+    private String phone = "";
     private String country;
-    private String postalZipCode;
+    private String postalZipCode = "";
     private String address;
 
     public String getCompanyName() {

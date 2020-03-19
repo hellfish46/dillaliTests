@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
 
-public class SettingsPage {
+public class SettingsPage extends BasePage{
 
     private By xpathFirstName = By.xpath("//input[@placeholder = 'name']");
     private By xpathLastName = By.xpath("//input[@placeholder = 'Last Name']");
