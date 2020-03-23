@@ -11,7 +11,7 @@ public class Invoice {
     String poNumber;
     String paymentMethod;
 
-    String discount;
+    double discount;
     String tax;
 
     Customer customer;

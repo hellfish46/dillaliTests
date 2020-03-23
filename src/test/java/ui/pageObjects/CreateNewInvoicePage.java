@@ -1,4 +1,4 @@
 package ui.pageObjects;
 
-public class CreateNewInvoicePage {
+public class CreateNewInvoicePage extends InvoiceActionsPage {
 }

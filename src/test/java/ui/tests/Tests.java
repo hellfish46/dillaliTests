@@ -323,6 +323,45 @@ public class Tests extends TestBase{
         allInvoicesPage.checkInvoiceInList(1);
     }
 
+    @Test
+    public void test(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.newInvoiceClick();
+        sleep(2000);
+
+        Customer customer = new Customer();
+        customer.setCompanyName("PetClinic");
+        customer.setContactPerson("John Smith");
+        customer.setEmail("duda@duda.com");
+        customer.setPhone("110123123");
+        customer.setCountry("El Salvador");
+        customer.setPostalZipCode("00z12x3");
+        customer.setAddress("Address for out company 12 123123 123ZXC!zxc");
+
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.createNewCustomer(customer);
+        sleep(2000);
+
+        createNewInvoicePage.fillDiscount(12.2);
+        sleep(2000);
+        createNewInvoicePage.fillInvoiceNumber("123423");
+        sleep(2000);
+        createNewInvoicePage.fillPaymentMethod("ds ads asds adas ad asdd sad ");
+        sleep(5000);
+
+
+
+    }
+
 
 
 }
