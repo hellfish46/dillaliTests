@@ -7,7 +7,7 @@ public class Item {
     private int quantity;
     private String currency;
     private int price;
-    private int amount;
+   // private long amount;
 
     public String getName() {
         return name;
@@ -49,11 +49,14 @@ public class Item {
         this.price = price;
     }
 
-    public int getAmount() {
+    public long getAmount() {
+        if (quantity == 0){
+            long amount = 1 * price;
+            return amount;
+        }
+        long amount = quantity * price;
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
+
 }

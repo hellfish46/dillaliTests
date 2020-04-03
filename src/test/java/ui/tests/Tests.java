@@ -1,16 +1,27 @@
 package ui.tests;
 
+import api.ApiRequests;
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Config;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Credentials;
+import com.codeborne.selenide.proxy.SelenideProxyServer;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 import ui.objectsUI.Admin;
 import ui.objectsUI.Customer;
+import ui.objectsUI.Invoice;
+import ui.objectsUI.Item;
 import ui.pageObjects.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import static com.codeborne.selenide.WebDriverRunner.closeWebDriver;
+import static com.codeborne.selenide.WebDriverRunner.getSelenideProxy;
 
 public class Tests extends TestBase{
 
@@ -358,7 +369,101 @@ public class Tests extends TestBase{
         createNewInvoicePage.fillPaymentMethod("ds ads asds adas ad asdd sad ");
         sleep(5000);
 
+    }
 
+    @Test
+    public void createInvoice(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.newInvoiceClick();
+        Invoice invoice = new Invoice();
+
+        Item item1 = new Item();
+        item1.setDescription("description description description description description");
+        item1.setName("Bananas !");
+        item1.setQuantity(45);
+        item1.setPrice(32420);
+
+        Item item2 = new Item();
+        item2.setDescription("decription description description");
+        item2.setName("apples !");
+        item2.setQuantity(707);
+        item2.setPrice(32420);
+
+        Item item3 = new Item();
+        //item2.setDescription("description description description description description");
+        item3.setName("sugar !");
+        //item2.setQuantity(70);
+        item3.setPrice(44888);
+
+        List<Item> items = new ArrayList<>();
+        items.add(item1);
+        items.add(item2);
+        items.add(item3);
+
+        long subTotalSum = item1.getAmount() + item2.getAmount() + item3.getAmount();
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.fillItems(items);
+        long subtotalForInvoice = createNewInvoicePage.getSubTotal();
+
+        assertThat(subTotalSum).isEqualTo(subtotalForInvoice);
+
+    }
+
+
+    @Test
+    public void restRequest(){
+        ApiRequests apiRequests = new ApiRequests();
+        String token = apiRequests.getAuthToken("test@test.com", "secret");
+
+
+        Configuration.proxyEnabled = true;
+        open("/admin/customers");
+        SelenideProxyServer selenideProxy = getSelenideProxy();
+
+
+        selenideProxy.addRequestFilter("AuthorizationWithToken", (request, contents, messageInfo) -> {
+            String authorization = "BASIC " + new Credentials("test@test.com", "secret").encode();
+            request.headers().add("Authorization", authorization);
+            return null;
+        });
+        open("/admin/customers");
+        sleep(50000);
+
+    }
+
+    @Test
+    public void getSubtotal(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.newInvoiceClick();
+        Invoice invoice = new Invoice();
+
+        Item item1 = new Item();
+        item1.setDescription("description description description description description");
+        item1.setName("Bananas !");
+        item1.setQuantity(45000);
+        item1.setPrice(32420);
+
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.fillItem(item1);
+        createNewInvoicePage.getSubTotal();
 
     }
 
