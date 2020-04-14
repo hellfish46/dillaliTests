@@ -412,7 +412,15 @@ public class Tests extends TestBase{
         long subTotalSum = item1.getAmount() + item2.getAmount() + item3.getAmount();
         CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
         createNewInvoicePage.fillItems(items);
+        createNewInvoicePage.fillDiscount(12.5);
+
         long subtotalForInvoice = createNewInvoicePage.getSubTotal();
+        long totalAmount = createNewInvoicePage.getTotalAmount();
+
+        System.out.println(subtotalForInvoice);
+        System.out.println(totalAmount);
+
+
 
         assertThat(subTotalSum).isEqualTo(subtotalForInvoice);
 
@@ -465,6 +473,34 @@ public class Tests extends TestBase{
         createNewInvoicePage.fillItem(item1);
         createNewInvoicePage.getSubTotal();
 
+    }
+
+    @Test
+    public void setCustomer(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("test@test.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.newInvoiceClick();
+
+        Customer customer = new Customer();
+        customer.setCompanyName("PetClinic");
+        customer.setContactPerson("John Smith");
+        customer.setEmail("duda@duda.com");
+        customer.setPhone("110123123");
+        customer.setCountry("El Salvador");
+        customer.setPostalZipCode("00z12x3");
+        customer.setAddress("Address for out company 12 123123 123ZXC!zxc");
+
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.setCustomer(customer);
+        createNewInvoicePage.checkCustomerInfo(customer);
     }
 
 

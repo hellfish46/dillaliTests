@@ -4,11 +4,14 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 import ui.objectsUI.Customer;
+import ui.objectsUI.Invoice;
 import ui.objectsUI.Item;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InvoiceActionsPage {
 
@@ -33,6 +36,11 @@ public class InvoiceActionsPage {
     private By xpathAddItemFormBtn = By.xpath("//div[@class='add-item-action']");
 
     private By xpathSubTotalCounter = By.xpath("//label[@class='invoice-amount']/div");
+    private By xpathTotalAmount = By.xpath("//label[@class='invoice-amount total']/div");
+
+    private By xpathSearchCustomerField = By.xpath("//input[@placeholder='Search']");
+
+    private By xpathSelectedCustomerInfo = By.xpath("//div[@class='customer-content-info']");
 
     public InvoiceActionsPage fillInvoiceNumber(String invoiceNumber){
         $(xpathInvoiceNumber).scrollIntoView(true).shouldBe(Condition.visible).setValue(invoiceNumber);
@@ -49,14 +57,26 @@ public class InvoiceActionsPage {
         return this;
     }
 
-    public InvoiceActionsPage fillDiscount(double discount){
+    public void fillDiscount(double discount){
         String discountString = Double.toString(discount);
         $(xpathDiscount).scrollIntoView(true).shouldBe(Condition.visible).setValue(discountString);
-        return this;
+    }
+
+    public double getDiscount(){
+        String discountString = $(xpathDiscount).scrollIntoView(true).shouldBe(Condition.visible).getValue();
+        double discountDouble = 0.0;
+        if(!discountString.equals("")){
+            discountDouble = Double.parseDouble(discountString);
+        }
+        return  discountDouble;
+    }
+
+    private void addCustomerClick(){
+        $(xpathAddCustomer).scrollIntoView(false).shouldBe(Condition.visible).click();
     }
 
     public InvoiceActionsPage createNewCustomer(Customer customer){
-        $(xpathAddCustomer).scrollIntoView(false).shouldBe(Condition.visible).click();
+        addCustomerClick();
         $(xpathAddNewCustomerBtn).shouldBe(Condition.visible).click();
         $x("//div[@class='modal-body']").shouldBe(Condition.visible);
 
@@ -91,7 +111,7 @@ public class InvoiceActionsPage {
     }
 
     public void fillItems(List<Item> items){
-        int countOfItems = items.size(); //5
+        int countOfItems = items.size();
         int howMuchClickedAddNewItemBtn = 0;
 
         for(Item item : items){
@@ -110,6 +130,64 @@ public class InvoiceActionsPage {
         String fullSubTotalString = subTotalArray[1].replaceAll("[.,]", "");
         return Long.parseLong(fullSubTotalString);
     }
+
+    public long getTotalAmount(){
+        String string = $(xpathTotalAmount).scrollIntoView(false).getText();
+        String[] totalAmountArray = string.split(" ");
+        String totalAmountString = totalAmountArray[1].replaceAll("[.,]", "");
+        return Long.parseLong(totalAmountString);
+    }
+
+    public void searchCustomer(Customer customer){
+        addCustomerClick();
+        $(xpathSearchCustomerField).shouldBe(Condition.visible).setValue(customer.getCompanyName());
+    }
+
+    private void clickExactCustomer(List<SelenideElement> allCustomersOfSearch, Customer customer){
+        for(SelenideElement item : allCustomersOfSearch){
+            List<SelenideElement> companyNameAndName = item.$$x("./div/label");
+            String companyName = companyNameAndName.get(0).getText();
+            System.out.println(companyName);
+            String customerName = companyNameAndName.get(1).getText();
+            if(customer.getCompanyName().equals(companyName) && customer.getContactPerson().equals(customerName)){
+                item.click();
+                break;
+            }
+        }
+    }
+
+    public void setCustomer(Customer customer){
+        searchCustomer(customer);
+        SelenideElement list = $x("//div[@class='list']").shouldBe(Condition.visible);
+        List<SelenideElement> allCustomersOfSearch = list.$$x("./div");
+        clickExactCustomer(allCustomersOfSearch, customer);
+    }
+
+    public HashMap getSelectedCustomer(){
+        SelenideElement selectedCustomerInfoDiv = $(xpathSelectedCustomerInfo)
+                .scrollIntoView(true).shouldBe(Condition.visible);
+        String customerCompanyName = selectedCustomerInfoDiv.$x("./label[1]").getText();
+        String customerContactPerson = selectedCustomerInfoDiv.$x("./label[2]").getText();
+        String customerCompanyAddress = selectedCustomerInfoDiv.$x("./label[3]").getText();
+        String customerCountry = selectedCustomerInfoDiv.$x("./label[4]").getText();
+        HashMap<String, String> customerInfo = new HashMap<String, String>();
+        customerInfo.put("companyName", customerCompanyName);
+        customerInfo.put("contactPerson", customerContactPerson);
+        customerInfo.put("address", customerCompanyAddress);
+        customerInfo.put("country", customerCountry);
+        return customerInfo;
+    }
+
+    public void checkCustomerInfo(Customer customer){
+        HashMap selectedCustomerInfo = getSelectedCustomer();
+        System.out.println(selectedCustomerInfo);
+        assertThat(selectedCustomerInfo.get("companyName")).isEqualTo(customer.getCompanyName());
+        assertThat(selectedCustomerInfo.get("contactPerson")).isEqualTo(customer.getContactPerson());
+        assertThat(selectedCustomerInfo.get("address")).isEqualTo(customer.getAddress());
+        assertThat(selectedCustomerInfo.get("country")).isEqualTo(customer.getCountry());
+    }
+
+
 
 
 

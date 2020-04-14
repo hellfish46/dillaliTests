@@ -15,6 +15,7 @@ public class Invoice {
     String tax;
 
     Customer customer;
+    Boolean createNewCustomer;
 
     List<Item> items = new ArrayList<>();
 
