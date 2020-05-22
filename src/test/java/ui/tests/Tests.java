@@ -541,13 +541,13 @@ public class Tests extends TestBase{
         Item item4 = new Item();
         item4.setName("Delivery of the bag");
         item4.setQuantity(16);
-        item4.setPrice(45.5);
+        item4.setPrice(45.56);
 
         List<Item> items = new ArrayList<>();
         items.add(item1);
         items.add(item2);
         items.add(item3);
-       // items.add(item4);
+        items.add(item4);
 
         Invoice invoice = new Invoice();
         invoice.setTax(13.7);

@@ -246,12 +246,12 @@ public class InvoiceActionsPage extends BasePage{
         double calculatedSumAndDiscount = (sumOfMoney - ((sumOfMoney * discount)/100));
         double taxWithoutRounded = ((calculatedSumAndDiscount * tax)/100);
         double calculatedTax = cutNumberAfterComma(taxWithoutRounded);
-        double calculatedTotalAmount = calculatedSumAndDiscount + calculatedTax;
+        double calculatedTotalAmount = cutNumberAfterComma(calculatedSumAndDiscount + calculatedTax);
 
 
         System.out.println("Total Amount on the page = "+ totalAmount);
-        System.out.println("Sub Total on the page = "+ subTotal);
         System.out.println("Calculated Total Amount  = "+ calculatedTotalAmount);
+        System.out.println("Sub Total on the page = "+ subTotal);
         System.out.println("Calculated Sub Total = " + sumOfMoney);
 
         assertThat(totalAmount).isEqualTo(calculatedTotalAmount);
