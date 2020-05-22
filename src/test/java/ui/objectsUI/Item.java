@@ -6,7 +6,7 @@ public class Item {
     private String description;
     private int quantity;
     private String currency;
-    private int price;
+    private double price;
    // private long amount;
 
     public String getName() {
@@ -41,20 +41,20 @@ public class Item {
         this.currency = currency;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public long getAmount() {
+    public double getAmount() {
         if (quantity == 0){
-            long amount = 1 * price;
+            double amount = 1 * price;
             return amount;
         }
-        long amount = quantity * price;
+        double amount = quantity * price;
         return amount;
     }
 

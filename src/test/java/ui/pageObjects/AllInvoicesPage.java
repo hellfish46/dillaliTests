@@ -8,6 +8,7 @@ import ui.objectsUI.Customer;
 import java.util.HashMap;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AllInvoicesPage extends BasePage {

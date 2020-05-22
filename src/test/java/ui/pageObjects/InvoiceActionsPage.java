@@ -7,13 +7,14 @@ import ui.objectsUI.Customer;
 import ui.objectsUI.Invoice;
 import ui.objectsUI.Item;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InvoiceActionsPage {
+public class InvoiceActionsPage extends BasePage{
 
     private By xpathInvoiceNumber = By.xpath("//label[normalize-space(text()) = 'Invoice Number']/following-sibling::div/input");
     private By xpathPONumber = By.xpath("//label[normalize-space(text()) = 'PO Number']/following-sibling::div/input");
@@ -42,14 +43,19 @@ public class InvoiceActionsPage {
 
     private By xpathSelectedCustomerInfo = By.xpath("//div[@class='customer-content-info']");
 
+    private By xpathAddTaxBtn = By.xpath("//div[normalize-space(text())='+ Add Tax']");
+
+    private By xpathSaveBtn = By.xpath("//button[@type = 'submit']");
+
+
+
     public InvoiceActionsPage fillInvoiceNumber(String invoiceNumber){
         $(xpathInvoiceNumber).scrollIntoView(true).shouldBe(Condition.visible).setValue(invoiceNumber);
         return this;
     }
 
-    public InvoiceActionsPage fillPONumber(String poNumber){
+    public void fillPONumber(String poNumber){
         $(xpathPONumber).scrollIntoView(true).shouldBe(Condition.visible).setValue(poNumber);
-        return this;
     }
 
     public InvoiceActionsPage fillPaymentMethod(String paymentMethod){
@@ -57,7 +63,7 @@ public class InvoiceActionsPage {
         return this;
     }
 
-    public void fillDiscount(double discount){
+    public void addDiscount(double discount){
         String discountString = Double.toString(discount);
         $(xpathDiscount).scrollIntoView(true).shouldBe(Condition.visible).setValue(discountString);
     }
@@ -91,8 +97,13 @@ public class InvoiceActionsPage {
     public void fillItem(Item item){
         SelenideElement mainTable = $(xpathMainItemTable).shouldBe(Condition.visible).scrollIntoView(true);
         SelenideElement lastItem = mainTable.$(xpathLastTableItem).shouldBe(Condition.visible);
+
+        //fill price
+        lastItem.$(xpathPriceOfParticularItem).setValue(String.format("%.0f", item.getPrice() * 100));
         //fill item name
-        lastItem.$(xpathInputNameFieldOfParticularItem).setValue(item.getName());
+        if(item.getName() != null) {
+            lastItem.$(xpathInputNameFieldOfParticularItem).setValue(item.getName());
+        }
         //fill item description if it exists
         if(item.getDescription() != null) {
             lastItem.$(xpathDescriptionOfParticularItem).setValue(item.getDescription());
@@ -101,8 +112,6 @@ public class InvoiceActionsPage {
         if (item.getQuantity() != 0) {
             lastItem.$(xpathQuantityOfParticularItem).setValue(Integer.toString(item.getQuantity()));
         }
-        //fill price
-        lastItem.$(xpathPriceOfParticularItem).setValue(Integer.toString(item.getPrice()));
 
     }
 
@@ -116,6 +125,7 @@ public class InvoiceActionsPage {
 
         for(Item item : items){
             fillItem(item);
+            //sleep(1000);
             if(howMuchClickedAddNewItemBtn != countOfItems-1){
                 clickAddItemFormBtn();
                 howMuchClickedAddNewItemBtn++;
@@ -124,21 +134,27 @@ public class InvoiceActionsPage {
         }
     }
 
-    public long getSubTotal(){
-        String string = $(xpathSubTotalCounter).scrollIntoView(false).getText();
+    public double getSubTotal(){
+        String string = $(xpathSubTotalCounter).shouldBe(Condition.visible).scrollIntoView(true).getText();
         String[] subTotalArray = string.split(" ");
-        String fullSubTotalString = subTotalArray[1].replaceAll("[.,]", "");
-        return Long.parseLong(fullSubTotalString);
+//        String fullSubTotalString = subTotalArray[1].replaceAll("[.,]", "");
+//        return Long.parseLong(fullSubTotalString);
+//        String fullSubTotalString = subTotalArray[1].replaceAll("[,]", "");
+//        return new BigDecimal(fullSubTotalString);
+        String fullSubTotalString = subTotalArray[1].replaceAll("[,]", "");
+        return Double.parseDouble(fullSubTotalString);
     }
 
-    public long getTotalAmount(){
-        String string = $(xpathTotalAmount).scrollIntoView(false).getText();
+    public double getTotalAmount(){
+        String string = $(xpathTotalAmount).shouldBe(Condition.visible).scrollIntoView(true).getText();
         String[] totalAmountArray = string.split(" ");
-        String totalAmountString = totalAmountArray[1].replaceAll("[.,]", "");
-        return Long.parseLong(totalAmountString);
+//        String totalAmountString = totalAmountArray[1].replaceAll("[.,]", "");
+//        return Long.parseLong(totalAmountString);
+        String totalAmountString = totalAmountArray[1].replaceAll("[,]", "");
+        return Double.parseDouble(totalAmountString);
     }
 
-    public void searchCustomer(Customer customer){
+    private void searchCustomer(Customer customer){
         addCustomerClick();
         $(xpathSearchCustomerField).shouldBe(Condition.visible).setValue(customer.getCompanyName());
     }
@@ -186,6 +202,72 @@ public class InvoiceActionsPage {
         assertThat(selectedCustomerInfo.get("address")).isEqualTo(customer.getAddress());
         assertThat(selectedCustomerInfo.get("country")).isEqualTo(customer.getCountry());
     }
+
+    public void clickAddTaxBtn(){
+        $(xpathAddTaxBtn).scrollIntoView(true).shouldBe(Condition.visible).click();
+    }
+
+    public void addNewTax(double tax){
+        String taxString = String.format("%.0f", tax * 100);
+        String taxName = tax + " %";
+
+        clickAddTaxBtn();
+        $x("//div[@class='tax-select']//button[@class='list-add-button']//label").
+                shouldBe(Condition.visible).click();
+        $x("//h5[@class='modal-heading']").shouldBe(Condition.visible);
+        $x("//div[@class='modal-body']//form//input[@class='input-field']").
+                shouldBe(Condition.visible).setValue(taxName);
+
+        $x("//div[@class='modal-body']//form//input[@class='v-money input-field']").
+                shouldBe(Condition.visible).setValue(taxString);
+
+        $x("//div[@class='modal-body']//button[@class='base-button btn btn-primary default-size ']").
+                shouldBe(Condition.visible).click();
+    }
+
+
+    private double cutNumberAfterComma(double hardDoube){
+       double calculatedTax = (double)Math.round(hardDoube * 100d) / 100d;
+       return calculatedTax;
+    }
+
+    public void checkTotalAmount(Invoice invoice){
+        double totalAmount = getTotalAmount();
+        double subTotal = getSubTotal();
+
+        double discount = invoice.getDiscount();
+        double tax = invoice.getTax();
+
+        List<Item> items = invoice.getItems();
+        double sumOfMoney = 0.0;
+        for(Item item : items){
+            sumOfMoney = sumOfMoney + item.getAmount();
+        }
+        double calculatedSumAndDiscount = (sumOfMoney - ((sumOfMoney * discount)/100));
+        double taxWithoutRounded = ((calculatedSumAndDiscount * tax)/100);
+        double calculatedTax = cutNumberAfterComma(taxWithoutRounded);
+        double calculatedTotalAmount = calculatedSumAndDiscount + calculatedTax;
+
+
+        System.out.println("Total Amount on the page = "+ totalAmount);
+        System.out.println("Sub Total on the page = "+ subTotal);
+        System.out.println("Calculated Total Amount  = "+ calculatedTotalAmount);
+        System.out.println("Calculated Sub Total = " + sumOfMoney);
+
+        assertThat(totalAmount).isEqualTo(calculatedTotalAmount);
+        assertThat(sumOfMoney).isEqualTo(subTotal);
+
+    }
+
+
+    public void clickSaveBtn(){
+        $(xpathSaveBtn).scrollIntoView(true).shouldBe(Condition.visible).click();
+        $(xpathSaveBtn).shouldNotBe(Condition.disabled);
+    };
+
+
+
+
 
 
 

@@ -362,7 +362,7 @@ public class Tests extends TestBase{
         createNewInvoicePage.createNewCustomer(customer);
         sleep(2000);
 
-        createNewInvoicePage.fillDiscount(12.2);
+        createNewInvoicePage.addDiscount(12.2);
         sleep(2000);
         createNewInvoicePage.fillInvoiceNumber("123423");
         sleep(2000);
@@ -409,20 +409,20 @@ public class Tests extends TestBase{
         items.add(item2);
         items.add(item3);
 
-        long subTotalSum = item1.getAmount() + item2.getAmount() + item3.getAmount();
+        double subTotalSum = item1.getAmount() + item2.getAmount() + item3.getAmount();
         CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
         createNewInvoicePage.fillItems(items);
-        createNewInvoicePage.fillDiscount(12.5);
+        createNewInvoicePage.addDiscount(12.5);
 
-        long subtotalForInvoice = createNewInvoicePage.getSubTotal();
-        long totalAmount = createNewInvoicePage.getTotalAmount();
+//        double subtotalForInvoice = createNewInvoicePage.getSubTotal();
+//        double totalAmount = createNewInvoicePage.getTotalAmount();
 
-        System.out.println(subtotalForInvoice);
-        System.out.println(totalAmount);
-
-
-
-        assertThat(subTotalSum).isEqualTo(subtotalForInvoice);
+//        System.out.println(subtotalForInvoice);
+//        System.out.println(totalAmount);
+//
+//
+//
+//        assertThat(subTotalSum).isEqualTo(subtotalForInvoice);
 
     }
 
@@ -501,6 +501,100 @@ public class Tests extends TestBase{
         CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
         createNewInvoicePage.setCustomer(customer);
         createNewInvoicePage.checkCustomerInfo(customer);
+    }
+
+    @Test
+    public void checkingOfCalculation(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("hellfish@dot.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        Customer customer = new Customer();
+        customer.setCompanyName("Oxid");
+        customer.setContactPerson("Petrov Andrew");
+        customer.setEmail("petrov@duda.com");
+        customer.setPhone("525390");
+        customer.setCountry("El Salvador");
+        customer.setPostalZipCode("49017");
+        customer.setAddress("Huliano Grimau str. house 7/6a");
+
+        Item item1 = new Item();
+        item1.setDescription("description description description description description");
+        item1.setName("Bananas !");
+        item1.setQuantity(45);
+        item1.setPrice(32420.5);
+
+        Item item2 = new Item();
+        item2.setDescription("decription description description");
+        item2.setName("apples !");
+        item2.setQuantity(707);
+        item2.setPrice(32420.3);
+
+        Item item3 = new Item();
+        item3.setName("sugar !");
+        item3.setPrice(44888.21);
+
+        Item item4 = new Item();
+        item4.setName("Delivery of the bag");
+        item4.setQuantity(16);
+        item4.setPrice(45.5);
+
+        List<Item> items = new ArrayList<>();
+        items.add(item1);
+        items.add(item2);
+        items.add(item3);
+       // items.add(item4);
+
+        Invoice invoice = new Invoice();
+        invoice.setTax(13.7);
+        invoice.setDiscount(10.0);
+        invoice.setItems(items);
+        invoice.setCustomer(customer);
+        invoice.setPoNumber("h114431");
+        invoice.setPaymentMethod("PayPal 12312365367356 some cart USD");
+        invoice.setCreateNewCustomer(false);
+
+
+
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+
+        allInvoicesPage.newInvoiceClick();
+
+
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.fillInvoice(invoice);
+        //sleep(70000);
+        createNewInvoicePage.checkTotalAmount(invoice);
+
+//        createNewInvoicePage.clickSaveBtn();
+//        createNewInvoicePage.checkNotificationMessage(NotificationMessage.INVOICECREATED);
+
+
+    }
+
+    @Test
+    public void checkInvoice(){
+        LoginPage loginPage = new LoginPage();
+        open("/login");
+
+        loginPage.fillEmail("hellfish@dot.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+        allInvoicesPage.clickEditInvoice(1);
+
+        EditInvoicePage editInvoicePage = new EditInvoicePage();
+        //editInvoicePage.checkTotalAmount(invoice);
     }
 
 

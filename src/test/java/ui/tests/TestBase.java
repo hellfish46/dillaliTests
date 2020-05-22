@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TestBase {
     static {
-        Configuration.baseUrl = "secret";
+        Configuration.baseUrl = "http://dillali.lancertool.com";
 
     }
 
