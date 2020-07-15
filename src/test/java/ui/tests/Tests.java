@@ -1,12 +1,10 @@
 package ui.tests;
 
 import api.ApiRequests;
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Config;
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Credentials;
+import com.codeborne.selenide.*;
 import com.codeborne.selenide.proxy.SelenideProxyServer;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 import ui.objectsUI.Admin;
 import ui.objectsUI.Customer;
@@ -505,13 +503,18 @@ public class Tests extends TestBase{
 
     @Test
     public void checkingOfCalculation(){
+
         LoginPage loginPage = new LoginPage();
+
         open("/login");
 
         loginPage.fillEmail("hellfish@dot.com");
         loginPage.fillPassword("secret");
         loginPage.clickLoginBtn();
         loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+
+
 
         Customer customer = new Customer();
         customer.setCompanyName("Oxid");
@@ -561,6 +564,7 @@ public class Tests extends TestBase{
 
 
 
+
         AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
         allInvoicesPage.invoicesClick();
 
@@ -569,13 +573,65 @@ public class Tests extends TestBase{
 
         CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
         createNewInvoicePage.fillInvoice(invoice);
-        //sleep(70000);
+
+
+        sleep(70000);
         createNewInvoicePage.checkTotalAmount(invoice);
 
 //        createNewInvoicePage.clickSaveBtn();
 //        createNewInvoicePage.checkNotificationMessage(NotificationMessage.INVOICECREATED);
 
 
+    }
+
+    @Test
+    public void settingDueDate(){
+        LoginPage loginPage = new LoginPage();
+
+        open("/login");
+
+        loginPage.fillEmail("hellfish@dot.com");
+        loginPage.fillPassword("secret");
+        loginPage.clickLoginBtn();
+        loginPage.checkNotificationMessage(NotificationMessage.LOGINSUCCESS);
+
+        Customer customer = new Customer();
+        customer.setCompanyName("Oxid");
+        customer.setContactPerson("Petrov Andrew");
+        customer.setEmail("petrov@duda.com");
+        customer.setPhone("525390");
+        customer.setCountry("El Salvador");
+        customer.setPostalZipCode("49017");
+        customer.setAddress("Huliano Grimau str. house 7/6a");
+
+        Item item1 = new Item();
+        item1.setDescription("description description description description description");
+        item1.setName("Bananas !");
+        item1.setQuantity(45);
+        item1.setPrice(32420.5);
+
+        List<Item> items = new ArrayList<>();
+        items.add(item1);
+
+        Invoice invoice = new Invoice();
+        invoice.setTax(13.7);
+        invoice.setDiscount(10.0);
+        invoice.setItems(items);
+        invoice.setCustomer(customer);
+        invoice.setPoNumber("h114431");
+        invoice.setPaymentMethod("PayPal 12312365367356 some cart USD");
+        invoice.setCreateNewCustomer(false);
+        invoice.setDueDate("23.11.2020");
+
+        AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
+        allInvoicesPage.invoicesClick();
+
+        allInvoicesPage.newInvoiceClick();
+
+        CreateNewInvoicePage createNewInvoicePage = new CreateNewInvoicePage();
+        createNewInvoicePage.fillInvoice(invoice);
+
+        sleep(70000);
     }
 
     @Test

@@ -6,7 +6,7 @@ import java.util.List;
 public class Invoice {
 
     private String invoiceNumber;
-    private String dueDate;
+    private String dueDate;//20.9.1990
     private String invoiceDate;
     private String poNumber;
     private String paymentMethod;

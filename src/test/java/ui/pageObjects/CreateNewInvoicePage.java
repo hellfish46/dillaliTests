@@ -10,6 +10,11 @@ public class CreateNewInvoicePage extends InvoiceActionsPage {
 
     public void fillInvoice(Invoice invoice){
 
+        //Add DueDate
+        if(invoice.getDueDate() != null){
+            setDueDate(invoice.getDueDate());
+        }
+
         //Create or set customer
         if(invoice.getCreateNewCustomer()){
             createNewCustomer(invoice.getCustomer());
@@ -37,6 +42,9 @@ public class CreateNewInvoicePage extends InvoiceActionsPage {
         if(invoice.getPaymentMethod() != null){
             fillPaymentMethod(invoice.getPaymentMethod());
         }
+
+
+
 
     }
 }

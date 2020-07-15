@@ -10,9 +10,11 @@ import ui.objectsUI.Item;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 public class InvoiceActionsPage extends BasePage{
 
@@ -46,6 +48,96 @@ public class InvoiceActionsPage extends BasePage{
     private By xpathAddTaxBtn = By.xpath("//div[normalize-space(text())='+ Add Tax']");
 
     private By xpathSaveBtn = By.xpath("//button[@type = 'submit']");
+
+
+
+    private class Calendar { /////// need to finish <========
+        private String xpathDueDate = "//label[normalize-space(text()) = 'Due Date']/following-sibling::div//input";
+        private String xpathInvoiceDate = "//label[normalize-space(text()) = 'Invoice Date']/following-sibling::div//input";
+        private String xpathMainCalendarPanel = "./../following-sibling::div[@class = 'vdp-datepicker__calendar'][1]";
+        //../div/span[text()='']
+        private String xpathPrevMonthArrow = "./header/span[@class = 'prev']";
+        private String xpathNextMonthArrow = "./header/span[@class = 'next']";
+
+        private void clickDueDateInput() {
+            $x(xpathDueDate).scrollIntoView(false).shouldBe(Condition.visible).click();
+            $x(xpathDueDate).$x(xpathMainCalendarPanel).scrollIntoView(true).shouldBe(Condition.visible);
+        }
+
+        private void clickInvoiceDate(){
+            $x(xpathInvoiceDate).scrollIntoView(false).shouldBe(Condition.visible).click();
+            $x(xpathInvoiceDate).$x(xpathMainCalendarPanel).scrollIntoView(false).shouldBe(Condition.visible);
+        }
+
+        private Map<String, String> getDateInInput (String inputName){
+            String fullDate = $x(inputName).scrollIntoView(false).shouldBe(Condition.visible).getValue();
+            String[] fullDateArray = fullDate.split(" ");
+            Map<String, String> fullDateMap = new HashMap<String, String>();
+
+            fullDateMap.put("day", fullDateArray[0]);
+            fullDateMap.put("month", fullDateArray[1]);
+            fullDateMap.put("year", fullDateArray[2]);
+
+            return fullDateMap;
+        }
+
+        private void setDayInCalendar(int day, String inputName){// implement not only for Due Date Calendar
+            $x(inputName).$x(xpathMainCalendarPanel).$x("./div/span[text()='"+ day +"']")
+                    .scrollIntoView(false).shouldBe(Condition.visible).click();
+        }
+
+        private void setMonthInCurrentYear (int monthIndex, String inputName){
+            Map<String, String> currentDate = getDateInInput(inputName);
+            int indexOfCurrentMonth = Month.valueOf(currentDate.get("month").toUpperCase()).ordinal();
+            if(monthIndex-1 == indexOfCurrentMonth){
+                return;
+            }
+            if(monthIndex-1 > indexOfCurrentMonth){
+                int steps = monthIndex-1 - indexOfCurrentMonth;
+                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).scrollIntoView(false);
+                for(int i = 1; i <= steps; i++){
+                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).shouldBe(Condition.visible).click();
+                }
+            }
+            if(monthIndex-1 < indexOfCurrentMonth){
+                int steps = indexOfCurrentMonth - monthIndex-1;
+                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).scrollIntoView(false);
+                for(int i = 1; i <= steps; i++){
+                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevMonthArrow).shouldBe(Condition.visible).click();
+                }
+            }
+        }
+
+        public void setDueDate(String dueDate){
+            System.out.println(dueDate);
+
+            clickDueDateInput();
+
+
+            String[] dueDateArray = dueDate.split("\\.");
+            System.out.println(dueDateArray.length);
+            int dayInt = Integer.parseInt(dueDateArray[0]);
+            int monthInt = Integer.parseInt(dueDateArray[1]);
+
+            setMonthInCurrentYear(monthInt,xpathDueDate);
+            setDayInCalendar(dayInt,xpathDueDate);
+            sleep(4000);//<=== доделать
+
+
+        }
+
+
+
+
+    }
+
+    Calendar calendar = new Calendar();
+
+    public void setDueDate(String dueDate){
+        System.out.println(dueDate);
+        calendar.setDueDate(dueDate);
+    }
+
 
 
 
@@ -264,6 +356,8 @@ public class InvoiceActionsPage extends BasePage{
         $(xpathSaveBtn).scrollIntoView(true).shouldBe(Condition.visible).click();
         $(xpathSaveBtn).shouldNotBe(Condition.disabled);
     };
+
+
 
 
 
