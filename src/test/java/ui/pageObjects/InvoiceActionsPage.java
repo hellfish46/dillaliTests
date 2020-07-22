@@ -89,19 +89,20 @@ public class InvoiceActionsPage extends BasePage{
         private void setMonthInCurrentYear (int monthIndex, String inputName){
             Map<String, String> currentDate = getDateInInput(inputName);
             int indexOfCurrentMonth = Month.valueOf(currentDate.get("month").toUpperCase()).ordinal();
-            if(monthIndex-1 == indexOfCurrentMonth){
+            int internalMonthIndex = monthIndex - 1;
+            if(internalMonthIndex == indexOfCurrentMonth){
                 return;
             }
-            if(monthIndex-1 > indexOfCurrentMonth){
-                int steps = monthIndex-1 - indexOfCurrentMonth;
+            if(indexOfCurrentMonth < internalMonthIndex){
+                int steps = internalMonthIndex - indexOfCurrentMonth;
                 $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).scrollIntoView(false);
                 for(int i = 1; i <= steps; i++){
                     $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).shouldBe(Condition.visible).click();
                 }
             }
-            if(monthIndex-1 < indexOfCurrentMonth){
-                int steps = indexOfCurrentMonth - monthIndex-1;
-                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).scrollIntoView(false);
+            if(indexOfCurrentMonth > internalMonthIndex){
+                int steps = indexOfCurrentMonth - internalMonthIndex;
+                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevMonthArrow).scrollIntoView(false);
                 for(int i = 1; i <= steps; i++){
                     $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevMonthArrow).shouldBe(Condition.visible).click();
                 }

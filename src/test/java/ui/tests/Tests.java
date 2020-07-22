@@ -621,7 +621,7 @@ public class Tests extends TestBase{
         invoice.setPoNumber("h114431");
         invoice.setPaymentMethod("PayPal 12312365367356 some cart USD");
         invoice.setCreateNewCustomer(false);
-        invoice.setDueDate("23.11.2020");
+        invoice.setDueDate("23.12.2020");
 
         AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
         allInvoicesPage.invoicesClick();
