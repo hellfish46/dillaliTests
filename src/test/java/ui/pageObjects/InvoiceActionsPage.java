@@ -55,7 +55,7 @@ public class InvoiceActionsPage extends BasePage{
         private String xpathDueDate = "//label[normalize-space(text()) = 'Due Date']/following-sibling::div//input";
         private String xpathInvoiceDate = "//label[normalize-space(text()) = 'Invoice Date']/following-sibling::div//input";
         private String xpathMainCalendarPanel = "./../following-sibling::div[@class = 'vdp-datepicker__calendar'][1]";
-        //../div/span[text()='']
+
         private String xpathPrevMonthArrow = "./header/span[@class = 'prev']";
         private String xpathNextMonthArrow = "./header/span[@class = 'next']";
 
@@ -66,7 +66,7 @@ public class InvoiceActionsPage extends BasePage{
 
         private void clickInvoiceDate(){
             $x(xpathInvoiceDate).scrollIntoView(false).shouldBe(Condition.visible).click();
-            $x(xpathInvoiceDate).$x(xpathMainCalendarPanel).scrollIntoView(false).shouldBe(Condition.visible);
+            $x(xpathInvoiceDate).$x(xpathMainCalendarPanel).scrollIntoView(true).shouldBe(Condition.visible);
         }
 
         private Map<String, String> getDateInInput (String inputName){
@@ -90,6 +90,7 @@ public class InvoiceActionsPage extends BasePage{
             Map<String, String> currentDate = getDateInInput(inputName);
             int indexOfCurrentMonth = Month.valueOf(currentDate.get("month").toUpperCase()).ordinal();
             int internalMonthIndex = monthIndex - 1;
+
             if(internalMonthIndex == indexOfCurrentMonth){
                 return;
             }
@@ -109,19 +110,33 @@ public class InvoiceActionsPage extends BasePage{
             }
         }
 
-        public void setDueDate(String dueDate){
-            System.out.println(dueDate);
 
+
+        public void setDueDate(String dueDate){
             clickDueDateInput();
 
-
             String[] dueDateArray = dueDate.split("\\.");
-            System.out.println(dueDateArray.length);
+
             int dayInt = Integer.parseInt(dueDateArray[0]);
             int monthInt = Integer.parseInt(dueDateArray[1]);
 
             setMonthInCurrentYear(monthInt,xpathDueDate);
             setDayInCalendar(dayInt,xpathDueDate);
+            sleep(4000);//<=== доделать
+
+
+        }
+
+        public void setInvoiceDate(String invoiceDate){
+            clickInvoiceDate();
+
+            String[] invoiceDateArray = invoiceDate.split("\\.");
+
+            int dayInt = Integer.parseInt(invoiceDateArray[0]);
+            int monthInt = Integer.parseInt(invoiceDateArray[1]);
+
+            setMonthInCurrentYear(monthInt,xpathInvoiceDate);
+            setDayInCalendar(dayInt,xpathInvoiceDate);
             sleep(4000);//<=== доделать
 
 
@@ -135,8 +150,11 @@ public class InvoiceActionsPage extends BasePage{
     Calendar calendar = new Calendar();
 
     public void setDueDate(String dueDate){
-        System.out.println(dueDate);
         calendar.setDueDate(dueDate);
+    }
+
+    public void setInvoiceDate(String invoiceDate){
+        calendar.setInvoiceDate(invoiceDate);
     }
 
 

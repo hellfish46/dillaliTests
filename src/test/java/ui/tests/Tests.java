@@ -622,6 +622,7 @@ public class Tests extends TestBase{
         invoice.setPaymentMethod("PayPal 12312365367356 some cart USD");
         invoice.setCreateNewCustomer(false);
         invoice.setDueDate("23.12.2020");
+        invoice.setInvoiceDate("25.5.1995");
 
         AllInvoicesPage allInvoicesPage = new AllInvoicesPage();
         allInvoicesPage.invoicesClick();

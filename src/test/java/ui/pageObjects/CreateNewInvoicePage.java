@@ -15,6 +15,11 @@ public class CreateNewInvoicePage extends InvoiceActionsPage {
             setDueDate(invoice.getDueDate());
         }
 
+        //Add InvoiceDate
+        if(invoice.getInvoiceDate() != null){
+            setInvoiceDate(invoice.getInvoiceDate());
+        }
+
         //Create or set customer
         if(invoice.getCreateNewCustomer()){
             createNewCustomer(invoice.getCustomer());

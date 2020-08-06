@@ -7,7 +7,7 @@ public class Invoice {
 
     private String invoiceNumber;
     private String dueDate;//20.9.1990
-    private String invoiceDate;
+    private String invoiceDate;//25.10.1995
     private String poNumber;
     private String paymentMethod;
 
