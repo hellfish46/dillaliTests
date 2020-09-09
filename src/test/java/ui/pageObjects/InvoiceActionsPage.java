@@ -7,14 +7,13 @@ import ui.objectsUI.Customer;
 import ui.objectsUI.Invoice;
 import ui.objectsUI.Item;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
+import static java.lang.Integer.parseInt;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 public class InvoiceActionsPage extends BasePage{
 
@@ -55,9 +54,18 @@ public class InvoiceActionsPage extends BasePage{
         private String xpathDueDate = "//label[normalize-space(text()) = 'Due Date']/following-sibling::div//input";
         private String xpathInvoiceDate = "//label[normalize-space(text()) = 'Invoice Date']/following-sibling::div//input";
         private String xpathMainCalendarPanel = "./../following-sibling::div[@class = 'vdp-datepicker__calendar'][1]";
+        private String xpathMainYearSelectPanel = "./../following-sibling::div[@class = 'vdp-datepicker__calendar'][2]";
 
-        private String xpathPrevMonthArrow = "./header/span[@class = 'prev']";
-        private String xpathNextMonthArrow = "./header/span[@class = 'next']";
+        private String xpathPrevArrow = "./header/span[@class = 'prev']";
+        private String xpathNextArrow = "./header/span[@class = 'next']";
+
+        private String xpathMonthYear = "./../following-sibling::div[1]//span[@class='day__month_btn up']";
+        private String xpathYear = "./../following-sibling::div[2]//span[@class='month__year_btn up']";
+
+
+        private void clickMonthYearBtn(String inputName){
+            $x(inputName).$x(xpathMonthYear).shouldBe(Condition.visible).click();
+        };
 
         private void clickDueDateInput() {
             $x(xpathDueDate).scrollIntoView(false).shouldBe(Condition.visible).click();
@@ -96,18 +104,41 @@ public class InvoiceActionsPage extends BasePage{
             }
             if(indexOfCurrentMonth < internalMonthIndex){
                 int steps = internalMonthIndex - indexOfCurrentMonth;
-                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).scrollIntoView(false);
+                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextArrow).scrollIntoView(false);
                 for(int i = 1; i <= steps; i++){
-                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextMonthArrow).shouldBe(Condition.visible).click();
+                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathNextArrow).shouldBe(Condition.visible).click();
                 }
             }
             if(indexOfCurrentMonth > internalMonthIndex){
                 int steps = indexOfCurrentMonth - internalMonthIndex;
-                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevMonthArrow).scrollIntoView(false);
+                $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevArrow).scrollIntoView(false);
                 for(int i = 1; i <= steps; i++){
-                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevMonthArrow).shouldBe(Condition.visible).click();
+                    $x(inputName).$x(xpathMainCalendarPanel).$x(xpathPrevArrow).shouldBe(Condition.visible).click();
                 }
             }
+        }
+
+        private void setYear (int year, String inputName){
+            Map<String, String> currentDate = getDateInInput(inputName);
+            int yearInInputInt = parseInt(currentDate.get("year"));
+            if(year == yearInInputInt){
+                return;
+            }
+            if (yearInInputInt < year){
+                int steps = year - yearInInputInt;
+                for(int i = 1; i <= steps; i++){
+                    $x(inputName).$x(xpathMainYearSelectPanel).$x(xpathNextArrow).shouldBe(Condition.visible).click();
+                }
+            }
+            if(yearInInputInt > year){
+                int steps = yearInInputInt - year;
+                for(int i = 1; i <= steps; i++){
+                    $x(inputName).$x(xpathMainYearSelectPanel).$x(xpathPrevArrow).shouldBe(Condition.visible).click();
+                }
+            }
+
+            // Continue here ! <<<<<<<<==================================================
+
         }
 
 
@@ -117,8 +148,9 @@ public class InvoiceActionsPage extends BasePage{
 
             String[] dueDateArray = dueDate.split("\\.");
 
-            int dayInt = Integer.parseInt(dueDateArray[0]);
-            int monthInt = Integer.parseInt(dueDateArray[1]);
+            int dayInt = parseInt(dueDateArray[0]);
+            int monthInt = parseInt(dueDateArray[1]);
+            int yearInt = parseInt(dueDateArray[2]);
 
             setMonthInCurrentYear(monthInt,xpathDueDate);
             setDayInCalendar(dayInt,xpathDueDate);
@@ -132,8 +164,8 @@ public class InvoiceActionsPage extends BasePage{
 
             String[] invoiceDateArray = invoiceDate.split("\\.");
 
-            int dayInt = Integer.parseInt(invoiceDateArray[0]);
-            int monthInt = Integer.parseInt(invoiceDateArray[1]);
+            int dayInt = parseInt(invoiceDateArray[0]);
+            int monthInt = parseInt(invoiceDateArray[1]);
 
             setMonthInCurrentYear(monthInt,xpathInvoiceDate);
             setDayInCalendar(dayInt,xpathInvoiceDate);
