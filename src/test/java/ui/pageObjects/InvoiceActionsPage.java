@@ -50,7 +50,7 @@ public class InvoiceActionsPage extends BasePage{
 
 
 
-    private class Calendar { /////// need to finish <========
+    private class Calendar {
         private String xpathDueDate = "//label[normalize-space(text()) = 'Due Date']/following-sibling::div//input";
         private String xpathInvoiceDate = "//label[normalize-space(text()) = 'Invoice Date']/following-sibling::div//input";
         private String xpathMainCalendarPanel = "./../following-sibling::div[@class = 'vdp-datepicker__calendar'][1]";
@@ -77,6 +77,11 @@ public class InvoiceActionsPage extends BasePage{
             $x(xpathInvoiceDate).$x(xpathMainCalendarPanel).scrollIntoView(true).shouldBe(Condition.visible);
         }
 
+        private void clickSetDateInput(String xpathInput) {
+            $x(xpathInput).scrollIntoView(false).shouldBe(Condition.visible).click();
+            $x(xpathInput).$x(xpathMainCalendarPanel).scrollIntoView(true).shouldBe(Condition.visible);
+        }
+
         private Map<String, String> getDateInInput (String inputName){
             String fullDate = $x(inputName).scrollIntoView(false).shouldBe(Condition.visible).getValue();
             String[] fullDateArray = fullDate.split(" ");
@@ -89,7 +94,7 @@ public class InvoiceActionsPage extends BasePage{
             return fullDateMap;
         }
 
-        private void setDayInCalendar(int day, String inputName){// implement not only for Due Date Calendar
+        private void setDayInCalendar(int day, String inputName){
             $x(inputName).$x(xpathMainCalendarPanel).$x("./div/span[text()='"+ day +"']")
                     .scrollIntoView(false).shouldBe(Condition.visible).click();
         }
@@ -137,45 +142,44 @@ public class InvoiceActionsPage extends BasePage{
                 }
             }
 
-            // Continue here ! <<<<<<<<==================================================
-
         }
 
+        private void setMothInNotCurrentYear(int monthIndex, String inputName){
+            int internalMonthIndex = monthIndex - 1;
+            String fullNameOfMonth = Month.values()[internalMonthIndex].getFullNameOfMonth();
+            String xpathFullMonthName = "./span[text()='"+ fullNameOfMonth +"']";
+            $x(inputName).$x(xpathMainYearSelectPanel).$x(xpathFullMonthName).shouldBe(Condition.visible).click();
+        }
 
-
-        public void setDueDate(String dueDate){
-            clickDueDateInput();
+        private void setDate(String xpathInput,String dueDate){
+            clickSetDateInput(xpathInput);
 
             String[] dueDateArray = dueDate.split("\\.");
+            Map<String, String> currentDate = getDateInInput(xpathInput);
 
             int dayInt = parseInt(dueDateArray[0]);
             int monthInt = parseInt(dueDateArray[1]);
             int yearInt = parseInt(dueDateArray[2]);
 
-            setMonthInCurrentYear(monthInt,xpathDueDate);
-            setDayInCalendar(dayInt,xpathDueDate);
-            sleep(4000);//<=== доделать
+            if(!dueDateArray[2].equals(currentDate.get("year"))){
+                $x(xpathInput).$x(xpathMonthYear).scrollIntoView(false).shouldBe(Condition.visible).click();
+                setYear(yearInt, xpathInput);
+                assertThat(yearInt).isEqualTo(parseInt($x(xpathInput).$x(xpathYear).getText()));
+                setMothInNotCurrentYear(monthInt,xpathInput);
+            }
+            else if (dueDateArray[2].equals(currentDate.get("year"))) {
+                setMonthInCurrentYear(monthInt, xpathInput);
+            }
+            setDayInCalendar(dayInt,xpathInput);
+        }
 
-
+        public void setDueDate(String dueDate){
+            setDate(xpathDueDate, dueDate);
         }
 
         public void setInvoiceDate(String invoiceDate){
-            clickInvoiceDate();
-
-            String[] invoiceDateArray = invoiceDate.split("\\.");
-
-            int dayInt = parseInt(invoiceDateArray[0]);
-            int monthInt = parseInt(invoiceDateArray[1]);
-
-            setMonthInCurrentYear(monthInt,xpathInvoiceDate);
-            setDayInCalendar(dayInt,xpathInvoiceDate);
-            sleep(4000);//<=== доделать
-
-
+            setDate(xpathInvoiceDate, invoiceDate);
         }
-
-
-
 
     }
 

@@ -16,6 +16,10 @@ public enum Month {
 
     private String fullNameOfMonth;
 
+    public String getFullNameOfMonth(){
+        return this.fullNameOfMonth;
+    }
+
     Month(String fullNameOfMonth){
         this.fullNameOfMonth = fullNameOfMonth;
     }
